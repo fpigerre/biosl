@@ -6,7 +6,7 @@ using System.Text;
 
 namespace biosl5
 {
-    class LEX ///init this a a new instance
+    class LEX ///init this a new instance
     {
 
         public ArrayList cmdLst = new ArrayList();
@@ -14,7 +14,7 @@ namespace biosl5
 
         private string _temp = "";
 
-        bool inStr = false;
+        bool inString = false;
 
         public void init()
         {
@@ -33,28 +33,35 @@ namespace biosl5
         public void lexer(string _lne)
         {
 
-            char[] currTok;
+            char[] currentToken;
             string token = "";
             bool canGo = true;
 
-            currTok = _lne.ToCharArray();
+            currentToken = _lne.ToCharArray();
 
-            for (int currIndex = 0; currIndex < currTok.Length && canGo; currIndex++) //loop thru every char
+            for (int currIndex = 0; currIndex < currentToken.Length && canGo; currIndex++) //loop thru every char
             {
 
-                token += currTok[currIndex];
+                token += currentToken[currIndex];
                 //Console.WriteLine(token);
 
-
-
-                if (inStr && currTok[currIndex] != '"') ///this is for strings!
+                if (inString)
                 {
-                    _temp += currTok[currIndex]; 
+                    if (currentToken[currIndex] != '"' && currentToken[currIndex].ToString() != "'") ///this is for strings!
+                    {
+                        _temp += currentToken[currIndex];
+                    }
+                    else if (currentToken[currIndex] == '"' || currentToken[currIndex].ToString() == "'")
+                    {
+                        if (_temp != "") { cmdLst.Add(_temp); _temp = ""; }
+                        inString = false;
+                    }
                 }
-                else if (currTok[currIndex] == '"') 
+                else
                 {
-                    if (_temp != "") { cmdLst.Add(_temp); _temp = ""; }
-                    inStr = false;
+                    if (currentToken[currIndex])
+                    {
+                    }
                 }
 
 
@@ -68,14 +75,27 @@ namespace biosl5
                         token = "";
                         break;
 
+                    case "if":
+                        cmdLst.Add("if");
+                        token = "";
+                        break;
+
+                    case "else":
+                        cmdLst.Add("else");
+                        token = "";
+                        break;
+
                     case " ":
                         token = "";
                         break;
 
                     case "\"":
-                        if (!inStr) {
-                            inStr = true;
+                    case "'":
+                        if (!inString)
+                        {
+                            inString = true;
                         }
+                        token = "";
                         break;
 
                     case "\r\n":
@@ -88,7 +108,7 @@ namespace biosl5
 
 
         }//function
-        
+
         public void showList()
         {
             for (int i = 0; i < cmdLst.Count; i++)

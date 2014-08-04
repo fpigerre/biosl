@@ -63,11 +63,11 @@ namespace biosl5
             Console.ReadKey();
         }
 
-        static string readFile(string loc)
+        static string readFile(string location)
         {
-            if (File.Exists(loc))
+            if (File.Exists(location))
             {
-                string raw = File.ReadAllText(loc);
+                string raw = File.ReadAllText(location);
                 Console.WriteLine(raw);
             }
             else
